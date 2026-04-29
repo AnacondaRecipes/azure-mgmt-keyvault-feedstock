@@ -1,40 +1,40 @@
 {% set name = "azure-mgmt-keyvault" %}
-{% set version = "2.2.0" %}
+{% set version = "13.0.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.zip
-  sha256: 1883e12eeb5819064dc52bf3a3ade05c791f4b66e4aeec948bda28df6ce2bce4
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.tar.gz
+  sha256: 56c12904e6d9ac49f886483e50e3f635d8bf43a489eb32fa7b4832f323d396c7
 
 build:
   number: 0
-  noarch: python
-  script: '{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv '
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed -vv
+  skip: true  # [py<39]
 
 requirements:
   host:
     - pip
     - python
+    - wheel
+    - setuptools >=77.0.3
   run:
-    - azure-common >=1.1,<2
-    - msrest >=0.5.0
-    - msrestazure >=0.4.32,<2.0.0
     - python
+    - isodate >=0.6.1
+    - azure-mgmt-core >=1.6.0
+    - typing-extensions >=4.6.0
 
 test:
   imports:
     - azure
     - azure.mgmt
     - azure.mgmt.keyvault
-    - azure.mgmt.keyvault.v2016_10_01
-    - azure.mgmt.keyvault.v2016_10_01.models
-    - azure.mgmt.keyvault.v2016_10_01.operations
-    - azure.mgmt.keyvault.v2018_02_14
-    - azure.mgmt.keyvault.v2018_02_14.models
-    - azure.mgmt.keyvault.v2018_02_14.operations
+  commands:
+    - pip check
+  requires:
+    - pip
 
 about:
   home: https://github.com/Azure/azure-sdk-for-python
@@ -42,6 +42,8 @@ about:
   license_family: MIT
   license_file: LICENSE
   summary: Microsoft Azure Key Vault Management Client Library for Python
+  description: |
+    This is the Microsoft Azure Key Vault Management Client Library.
   doc_url: https://docs.microsoft.com/python/api/overview/azure/key-vault
   dev_url: https://github.com/Azure/azure-sdk-for-python
 
